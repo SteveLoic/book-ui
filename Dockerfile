@@ -2,7 +2,7 @@ FROM node:22 As Build
 LABEL name="Steve"
 WORKDIR /app
 COPY package.*json .
-RUN npm ci
+RUN npm install
 COPY src .
 RUN npm run build
 
