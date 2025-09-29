@@ -1,0 +1,26 @@
+name: "NPM Custom Action"
+description: "Installing and Caching NPM Packages"
+inputs:
+    path-to-folder:
+        description: "The Path where the node_modules must be cahed"
+        required: true
+    lock-file:
+        description: "Record the exact versions for every installed package"
+        required: false
+        default: "package-lock.json"
+
+runs:
+    using: "composite"
+    steps:
+        - name: Check the code
+          uses: actions/checkout@v5
+
+        - name: Cache NPM dependencoes
+          uses: actions/cache@v4
+          with:
+              path: ${{inputs.path-to-folder}}
+              key: ${{runner.os}}-node-modules-${{hashFiles('package-lock.json')}}
+
+        - name: Composite Action - Cache & Install NPM Packages
+          run: npm ci
+          shell: bash

@@ -1,0 +1,40 @@
+name: Book-ui
+on:
+    push:
+        branches:
+            - main
+            - develop
+            - features
+jobs:
+    build-and-test:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Install dependencies
+              uses: ./.github/workflows/npm-action/action.yml
+              with:
+                  path-to-folder: node_modules
+
+            - name: Test the code
+              run: echo nom run test
+
+    code-coverage:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Install dependencies
+              uses: ./.github/workflows/npm-action/action.yml
+              with:
+                  path-to-folder: node_modules
+
+            - name: Test code coverage
+              run: test coverage
+    deploy-job:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Login to Docker Hub
+              run: echo login to docker
+
+            - name: Build and test the image
+              run: build the image
+
+            - name: Push the image to the docker registry
+              run: push the image
