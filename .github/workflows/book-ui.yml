@@ -10,7 +10,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Install dependencies
-              uses: ./.github/workflows/npm-action/action.yml
+              uses: ./.github/actions/npm-action/action.yml
               with:
                   path-to-folder: ~/.npm
 
@@ -21,7 +21,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Install dependencies
-              uses: ./.github/workflows/npm-action/action.yml
+              uses: ./.github/actions/npm-action/action.yml
               with:
                   path-to-folder: ~/.npm
 
