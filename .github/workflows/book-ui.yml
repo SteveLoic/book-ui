@@ -61,9 +61,9 @@ jobs:
             - name: Docker build and push the image to docker hub
               uses: docker/build-push-action@v6
               with:
-                  push: true
+                  push: false
                   context: .
-                  tags: ${{vars.DOCKER_USERNAME}}//${{env.APPLICATION_NAME}}:${{github.run_number}}
+                  tags: ${{vars.DOCKER_USERNAME}}/${{env.APPLICATION_NAME}}:${{github.run_number}}
 
             - name: Push the image to the docker registry
               run: push the image
