@@ -4,7 +4,7 @@ on:
         branches:
             - main
             - develop
-            - features
+            - features/**
 jobs:
     build-and-test:
         runs-on: ubuntu-latest
@@ -12,7 +12,7 @@ jobs:
             - name: Install dependencies
               uses: ./.github/workflows/npm-action/action.yml
               with:
-                  path-to-folder: node_modules
+                  path-to-folder: ~/.npm
 
             - name: Test the code
               run: echo nom run test
@@ -23,7 +23,7 @@ jobs:
             - name: Install dependencies
               uses: ./.github/workflows/npm-action/action.yml
               with:
-                  path-to-folder: node_modules
+                  path-to-folder: ~/.npm
 
             - name: Test code coverage
               run: test coverage
