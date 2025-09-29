@@ -10,7 +10,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Install dependencies
-              uses: ./actions/npm-action
+              uses: ./.github/actions/npm-action
               with:
                   path-to-folder: ~/.npm
 
@@ -21,7 +21,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Install dependencies
-              uses: ./actions/npm-action
+              uses: ./.github/actions/npm-action
               with:
                   path-to-folder: ~/.npm
 
