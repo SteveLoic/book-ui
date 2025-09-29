@@ -12,9 +12,6 @@ inputs:
 runs:
     using: "composite"
     steps:
-        - name: Check the code
-          uses: actions/checkout@v5
-
         - name: Cache NPM dependencoes
           uses: actions/cache@v4
           with:
