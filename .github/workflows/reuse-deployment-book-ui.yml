@@ -1,0 +1,9 @@
+name: Deployment - Reusable Workflow  for Book UI
+on:
+    workflow_call:
+jobs:
+    reuses-deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v5
