@@ -55,8 +55,8 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: ${{github.actor}}
-          password: ${{secrets.GITHUB_TOKEN}}
+          username: ${{ github.actor}}
+          password: ${{ secrets.GITHUB_TOKEN}}
 
       - name: Docker build and push the image to docker hub
         uses: docker/build-push-action@v6
@@ -68,7 +68,7 @@ jobs:
       - name: Push the image to the docker registry
         run: |
           docker images -a
-          docker run --name book-ui-app -p 8180:80  ${{vars.DOCKER_USERNAME}}/${{env.APPLICATION_NAME}}:${{github.run_number}}
+          docker run -d --name book-ui-app -p 8180:80  ${{vars.DOCKER_USERNAME}}/${{env.APPLICATION_NAME}}:${{github.run_number}}
 
           sleep 3
 
