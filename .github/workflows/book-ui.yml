@@ -69,6 +69,12 @@ jobs:
         run: |
           docker images -a
           docker run --name book-ui-app -p 8180:80  ${{vars.DOCKER_USERNAME}}/${{env.APPLICATION_NAME}}:${{github.run_number}}
-          sleep 5
+
+          sleep 3
+
+          CONTENT=$(curl -s http://localhost:8180)
+
+          echo "$CONTENT" | grep -q "<title>React App</title>" && echo "Gefunden ✅" || echo "Nicht gefunden ❌"
+
           docker stop book-ui-app
           docker rm book-ui-app
