@@ -1,44 +1,80 @@
 name: Book-ui
 on:
-    push:
-        branches:
-            - main
-            - develop
-            - features/**
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+      - develop
+  push:
+    branches:
+      - features/**
+env:
+  APPLICATION_NAME: "book-ui"
 jobs:
-    build-and-test:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Check the code
-              uses: actions/checkout@v5
-            - name: Install dependencies
-              uses: ./.github/actions/npm-action
-              with:
-                  path-to-folder: ~/.npm
+  build-and-test:
+    runs-on: ubuntu-latest
+    name: build and test
+    steps:
+      - name: Check the code
+        uses: actions/checkout@v5
+      - name: Install dependencies
+        uses: ./.github/actions/npm-action
+        with:
+          path-to-folder: ~/.npm
 
-            - name: Test the code
-              run: echo nom run test
+      - name: Test the code
+        run: echo npm run test
 
-    code-coverage:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Check the code
-              uses: actions/checkout@v5
-            - name: Install dependencies
-              uses: ./.github/actions/npm-action
-              with:
-                  path-to-folder: ~/.npm
+  code-coverage:
+    runs-on: ubuntu-latest
+    name: Test-coverage
+    steps:
+      - name: Check the code
+        uses: actions/checkout@v5
+      - name: Install dependencies
+        uses: ./.github/actions/npm-action
+        with:
+          path-to-folder: ~/.npm
 
-            - name: Test code coverage
-              run: test coverage
-    deploy-job:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Login to Docker Hub
-              run: echo login to docker
+      - name: Test code coverage
+        run: test coverage
+  docker:
+    needs: [build-and-test, code-coverage]
+    runs-on: ubuntu-latest
+    name: containerization
+    steps:
+      - name: Code checkout
+        uses: actions/checkout@v5
 
-            - name: Build and test the image
-              run: build the image
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{vars.DOCKER_USERNAME}}
+          password: ${{secrets.DOCKER_PASSWORD}}
+      - name: Login to Github
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor}}
+          password: ${{ secrets.GITHUB_TOKEN}}
 
-            - name: Push the image to the docker registry
-              run: push the image
+      - name: Docker build and push the image to docker hub
+        uses: docker/build-push-action@v6
+        with:
+          push: false
+          context: .
+          tags: ${{vars.DOCKER_USERNAME}}/${{env.APPLICATION_NAME}}:${{github.run_number}}
+
+      - name: Push the image to the docker registry
+        run: |
+          docker images -a
+          docker run -d --name book-ui-app -p 8180:80  ${{vars.DOCKER_USERNAME}}/${{env.APPLICATION_NAME}}:${{github.run_number}}
+
+          sleep 3
+
+          CONTENT=$(curl -s http://localhost:8180)
+
+          echo "$CONTENT" | grep -q "<title>React App</title>" && echo "Gefunden ✅" || echo "Nicht gefunden ❌"
+
+          docker stop book-ui-app
+          docker rm book-ui-app
